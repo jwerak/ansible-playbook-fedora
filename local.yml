@@ -1,0 +1,22 @@
+---
+- name: Basic setup for Fedora laptop
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Enable RPM Fusion free repository
+      ansible.builtin.import_tasks: tasks/enable_repositories.yml
+
+    - name: Update all packages
+      ansible.builtin.import_tasks: tasks/update.yml
+
+    - name: Install essential packages
+      ansible.builtin.import_tasks: tasks/packages.yml
+
+    - name: Ensure Fish shell config is up-to-date
+      ansible.builtin.copy:
+        src: files/config/fish
+        dest: ~/.config/fish
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
+        mode: '0644'
