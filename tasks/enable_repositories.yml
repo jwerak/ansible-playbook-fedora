@@ -1,13 +1,20 @@
 ---
 - name: Import RPM Fusion free GPG key
-  ansible.builtin.command:
-    cmd: rpm --import https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-free-fedora
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://mirrors.rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-free-fedora
 
 - name: Import RPM Fusion nonfree GPG key
-  ansible.builtin.command:
-    cmd: rpm --import https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-nonfree-fedora
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://mirrors.rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-nonfree-fedora
 
-- name: Enable RPM Fusion free and nonfree repositories
-  ansible.builtin.shell: |
-    dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm
-    dnf install -y https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm
+- name: Enable RPM Fusion free repository
+  ansible.builtin.dnf:
+    name: https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm
+    state: present
+
+- name: Enable RPM Fusion nonfree repository
+  ansible.builtin.dnf:
+    name: https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm
+    state: present
